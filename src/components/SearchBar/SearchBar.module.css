@@ -1,0 +1,36 @@
+.header {
+  width: 100%;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: rgb(0, 0, 97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  position: relative;
+}
+
+.input {
+  width: 300px;
+  padding: 4px 4px 4px 26px;
+  outline: none;
+  border: none;
+  background-color: #fafafa;
+  margin-right: 12px;
+}
+
+.icon {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}
+
+.btn {
+  border: none;
+  background-color: rgb(225, 255, 216);
+  border-radius: 4px;
+  color: ;
+  padding: 4px;
+}
