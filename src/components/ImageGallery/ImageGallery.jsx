@@ -1,13 +1,16 @@
-const ImageGallery = () => {
+import ImageCard from "../ImageCard/ImageCard";
+
+const ImageGallery = ({ items }) => {
   return (
     <>
       <ul>
-        {/* Набір елементів списку із зображеннями */}
-        <li>
-          <div>
-            <img src="" alt="" />
-          </div>
-        </li>
+        {items.map((item) => {
+          return (
+            <li key={item.id}>
+              <ImageCard items={item} />
+            </li>
+          );
+        })}
       </ul>
     </>
   );
