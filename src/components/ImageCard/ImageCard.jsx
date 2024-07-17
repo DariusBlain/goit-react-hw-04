@@ -1,3 +1,5 @@
+import s from "./ImageCard.module.css";
+
 const ImageCard = ({
   items: {
     alt_description,

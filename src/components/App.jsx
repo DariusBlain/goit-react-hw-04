@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar/SearchBar";
 import ImageGallery from "./ImageGallery/ImageGallery";
@@ -7,80 +6,72 @@ import "./App.css";
 import Loader from "./Loader/Loader";
 import ErrorMessage from "./ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn";
+import ImageModal from "./ImageModal/ImageModal";
 
 function App() {
-  const pageLim = 10;
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [loadMore, setLoadMore] = useState(false);
   const [query, setQuery] = useState("");
-
-  const handleSearch = (searchQuery) => {
-    setQuery(searchQuery);
-  };
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       if (query === "") return;
-      setLoading(true);
-      setImages([]);
+      setIsLoading(true);
       setError(false);
       setNotFound(false);
       try {
-        const data = await fetchImagesWithSearch(query, 1, pageLim);
-        if (data.length === 0) {
+        const data = await fetchImagesWithSearch(query, page);
+        if (data.results.length === 0) {
           setNotFound(true);
         } else {
-          setImages(data);
-          setLoadMore(data.length === pageLim);
+          setImages((prev) => [...prev, ...data.results]);
+          setTotal(data.total_pages);
         }
       } catch (error) {
         setError(true);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [query]);
+  }, [query, page]);
 
-  useEffect(() => {
-    const fetchMoreImages = async () => {
-      if (page === 1 || query === "") return;
-      setLoading(true);
-      try {
-        const newImages = await fetchImagesWithSearch(query, page, pageLim);
-        setImages((prevImages) => [...prevImages, ...newImages]);
-        setLoadMore(newImages.length === pageLim);
-      } catch (error) {
-        setError(true);
-        setLoadMore(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMoreImages();
-  }, [page]);
+  const handleSetQuery = (query) => {
+    setQuery(query);
+    setImages([]);
+    setPage(1);
+  };
 
   const handleClick = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
   return (
     <>
-      <SearchBar onSubmit={handleSearch} />
+      <SearchBar onSubmit={handleSetQuery} />
       {images.length > 0 && <ImageGallery items={images} />}
-      {loading && <Loader />}
+      {isLoading && <Loader />}
       {(error || notFound) && <ErrorMessage />}
-      {(images.length > 0 || loadMore) && (
-        <LoadMoreBtn handleClick={handleClick} />
-      )}
+      {total > page && !isLoading && <LoadMoreBtn handleClick={handleClick} />}
+      <ImageModal />
     </>
   );
 }
 
 export default App;
+
+// (images.length > 0 || loadMore) &&
