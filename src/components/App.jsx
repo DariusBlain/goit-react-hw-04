@@ -16,7 +16,8 @@ function App() {
   const [error, setError] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [query, setQuery] = useState("");
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalImage, setModalImage] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,22 +53,27 @@ function App() {
     setPage((prevPage) => prevPage + 1);
   };
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
   function closeModal() {
     setIsOpen(false);
   }
 
+  const handleClickImage = (data) => {
+    setModalImage(data);
+    setIsOpen(true);
+  };
+
   return (
     <>
       <SearchBar onSubmit={handleSetQuery} />
-      {images.length > 0 && <ImageGallery items={images} />}
+      {images.length > 0 && (
+        <ImageGallery items={images} handleClickImage={handleClickImage} />
+      )}
       {isLoading && <Loader />}
       {(error || notFound) && <ErrorMessage />}
       {total > page && !isLoading && <LoadMoreBtn handleClick={handleClick} />}
-      <ImageModal />
+      <ImageModal onClose={closeModal} isOpen={isOpen}>
+        <img src={modalImage.urls?.regular} alt={modalImage.alt_description} />
+      </ImageModal>
     </>
   );
 }
