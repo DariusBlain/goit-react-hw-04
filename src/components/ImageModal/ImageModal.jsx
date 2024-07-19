@@ -1,6 +1,5 @@
 import s from "./ImageModal.module.css";
 import ReactModal from "react-modal";
-ReactModal.setAppElement("#root");
 
 const ImageModal = ({ onClose, children, isOpen }) => {
   return (
@@ -10,7 +9,7 @@ const ImageModal = ({ onClose, children, isOpen }) => {
         onRequestClose={onClose}
         className={s.content}
         overlayClassName={s.overlay}
-        contentLabel="Example Modal"
+        contentLabel="Image Modal"
       >
         {children}
       </ReactModal>

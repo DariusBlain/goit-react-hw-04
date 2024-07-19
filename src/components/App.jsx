@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SearchBar from "./SearchBar/SearchBar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import fetchImagesWithSearch from "../images-api";
@@ -18,6 +18,7 @@ function App() {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [modalImage, setModalImage] = useState({});
+  const lastImageRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +44,15 @@ function App() {
     fetchData();
   }, [query, page]);
 
+  useEffect(() => {
+    if (page > 1 && lastImageRef.current) {
+      setTimeout(() => {
+        const { top } = lastImageRef.current.getBoundingClientRect();
+        window.scrollTo({ top: window.scrollY + top, behavior: "smooth" });
+      }, 100);
+    }
+  }, [images, page]);
+
   const handleSetQuery = (query) => {
     setQuery(query);
     setImages([]);
@@ -53,9 +63,9 @@ function App() {
     setPage((prevPage) => prevPage + 1);
   };
 
-  function closeModal() {
+  const closeModal = () => {
     setIsOpen(false);
-  }
+  };
 
   const handleClickImage = (data) => {
     setModalImage(data);
@@ -66,11 +76,17 @@ function App() {
     <>
       <SearchBar onSubmit={handleSetQuery} />
       {images.length > 0 && (
-        <ImageGallery items={images} handleClickImage={handleClickImage} />
+        <ImageGallery
+          items={images}
+          handleClickImage={handleClickImage}
+          lastImageRef={lastImageRef}
+        />
       )}
       {isLoading && <Loader />}
       {(error || notFound) && <ErrorMessage />}
-      {total > page && !isLoading && <LoadMoreBtn handleClick={handleClick} />}
+      {total > page && !isLoading && !error && (
+        <LoadMoreBtn handleClick={handleClick} />
+      )}
       <ImageModal onClose={closeModal} isOpen={isOpen}>
         <img src={modalImage.urls?.regular} alt={modalImage.alt_description} />
       </ImageModal>
@@ -79,5 +95,3 @@ function App() {
 }
 
 export default App;
-
-// (images.length > 0 || loadMore) &&
