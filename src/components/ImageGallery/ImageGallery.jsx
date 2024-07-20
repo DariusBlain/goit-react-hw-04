@@ -10,10 +10,9 @@ const ImageGallery = ({ items, handleClickImage, lastImageRef }) => {
           <li
             key={item.id}
             className={s.item}
-            onClick={() => handleClickImage(item)}
             ref={isLastImage ? lastImageRef : null}
           >
-            <ImageCard item={item} />
+            <ImageCard item={item} handleClickImage={handleClickImage} />
           </li>
         );
       })}

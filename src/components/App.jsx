@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import SearchBar from "./SearchBar/SearchBar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import fetchImagesWithSearch from "../images-api";
@@ -63,13 +63,13 @@ function App() {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-
   const handleClickImage = (data) => {
     setModalImage(data);
     setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
   };
 
   return (
@@ -87,9 +87,9 @@ function App() {
       {total > page && !isLoading && !error && (
         <LoadMoreBtn handleClick={handleClick} />
       )}
-      <ImageModal onClose={closeModal} isOpen={isOpen}>
-        <img src={modalImage.urls?.regular} alt={modalImage.alt_description} />
-      </ImageModal>
+      {isOpen && (
+        <ImageModal onClose={closeModal} isOpen={isOpen} data={modalImage} />
+      )}
     </>
   );
 }
