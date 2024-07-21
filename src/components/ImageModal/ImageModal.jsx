@@ -1,14 +1,7 @@
 import s from "./ImageModal.module.css";
 import ReactModal from "react-modal";
 const ImageModal = ({ onClose, isOpen, data }) => {
-  if (!isOpen) return null;
-
-  const {
-    alt_description,
-    likes,
-    urls: { regular },
-    user: { name },
-  } = data;
+  const { alt_description = "", likes = 0, urls, user } = data;
 
   return (
     <div className={s.wrapper}>
@@ -19,9 +12,9 @@ const ImageModal = ({ onClose, isOpen, data }) => {
         overlayClassName={s.overlay}
         contentLabel="Image Modal"
       >
-        <img src={regular} alt={alt_description} />
+        <img src={urls?.regular} alt={alt_description} />
         <div className={s.descriptionWrapper}>
-          <p className={s.description}>Author: {name}</p>
+          <p className={s.description}>Author: {user?.name}</p>
           <p className={s.description}>Likes: {likes}</p>
           <p className={s.description}>
             Description: <span className={s.span}>{alt_description}</span>

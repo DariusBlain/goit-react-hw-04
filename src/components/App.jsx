@@ -87,9 +87,7 @@ function App() {
       {total > page && !isLoading && !error && (
         <LoadMoreBtn handleClick={handleClick} />
       )}
-      {isOpen && (
-        <ImageModal onClose={closeModal} isOpen={isOpen} data={modalImage} />
-      )}
+      <ImageModal onClose={closeModal} isOpen={isOpen} data={modalImage} />
     </>
   );
 }
